@@ -1,0 +1,2 @@
+# iconoclast
+a mining app
