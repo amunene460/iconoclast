@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and account balance",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "balance": { "type": "number", "description": "Current crypto balance" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "balance", "role"]
+    },
+    "Machine": {
+      "title": "Machine",
+      "description": "A tech machine available for purchase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number", "description": "Cost in KES" },
+        "dailyIncome": { "type": "number", "description": "KSh generated per day" },
+        "category": { "type": "string", "enum": ["tech", "electronics", "high-end"] },
+        "imageUrl": { "type": "string" },
+        "stock": { "type": "number", "description": "Number of units remaining" },
+        "stats": { "type": "object", "description": "Performance statistics" }
+      },
+      "required": ["name", "price", "dailyIncome", "category", "stock"]
+    },
+    "SystemStats": {
+      "title": "SystemStats",
+      "description": "Global platform statistics for admin",
+      "type": "object",
+      "properties": {
+        "totalInvestors": { "type": "number" },
+        "totalDeposits": { "type": "number" },
+        "totalWithdrawals": { "type": "number" },
+        "totalProfit": { "type": "number" },
+        "siteVisits": { "type": "number" },
+        "isMaintenanceMode": { "type": "boolean" }
+      }
+    },
+    "UserMachine": {
+      "title": "UserMachine",
+      "description": "A machine owned by a specific user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "machineId": { "type": "string" },
+        "purchaseDate": { "type": "string", "format": "date-time" },
+        "lastClaimedAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["active", "upgraded", "maintenance"] }
+      },
+      "required": ["machineId", "purchaseDate"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Deposit or withdrawal record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["deposit", "withdrawal", "purchase"] },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "description": "USD, KES, or Crypto" },
+        "method": { "type": "string", "enum": ["mpesa", "visa", "bank", "crypto"] },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "details": { "type": "string" }
+      },
+      "required": ["type", "amount", "status", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/machines/{machineId}": {
+      "schema": "Machine",
+      "description": "Catalog of available mining machines"
+    },
+    "/users/{userId}/machines/{userMachineId}": {
+      "schema": "UserMachine",
+      "description": "Machines owned by the user"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "User transaction history"
+    },
+    "/system/stats": {
+      "schema": "SystemStats",
+      "description": "Global platform statistics"
+    },
+    "/test/connection": {
+      "schema": { "type": "object", "properties": { "status": { "type": "string" } } },
+      "description": "Connection test document"
+    }
+  }
+}
